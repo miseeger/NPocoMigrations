@@ -1,0 +1,15 @@
+{
+  "Version": "1.0.1",
+  "Description": "Add Membership Settings and TableColumns-View",
+  "Tasks": [
+    {
+      // Create MemberSettings
+      "Execute": "CREATE TABLE [dbo].[MemberSettings]([MemberSettingsId] [uniqueidentifier] NOT NULL,[CreateDate] [datetime] NOT NULL,[CreateUserId] [uniqueidentifier] NOT NULL,[ModifyDate] [datetime] NOT NULL,[ModifyUserId] [uniqueidentifier] NOT NULL,CONSTRAINT [PK_dbo.MemberSettings] PRIMARY KEY CLUSTERED ([MemberSettingsId] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]; ALTER TABLE [dbo].[MemberSettings] ADD  DEFAULT ('1900-01-01T00:00:00.000') FOR [CreateDate]; ALTER TABLE [dbo].[MemberSettings] ADD  DEFAULT ('00000000-0000-0000-0000-000000000000') FOR [CreateUserId]; ALTER TABLE [dbo].[MemberSettings] ADD  DEFAULT ('1900-01-01T00:00:00.000') FOR [ModifyDate]; ALTER TABLE [dbo].[MemberSettings] ADD  DEFAULT ('00000000-0000-0000-0000-000000000000') FOR [ModifyUserId];",
+      "Test": "SELECT count(*) from sys.tables where name = 'MemberSettings'"
+    },
+    {
+      // New View to retrieve Tables and their columns
+      "Execute": "CREATE VIEW dbo.TableColumns_v AS SELECT t.name AS 'Table', c.name AS 'Column', tp.name AS 'Type' FROM sys.columns c JOIN sys.tables t ON (c.object_id = t.object_id) JOIN sys.types tp ON (c.system_type_id = tp.system_type_id) WHERE tp.name <> 'sysname'"
+    }
+  ]
+}

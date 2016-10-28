@@ -1,0 +1,5 @@
+{
+  "DbVersion": "0.0.0",
+  "DbConnection": "DevDb",
+  "MigrationsDir":".\\migrations"
+}

@@ -1,0 +1,20 @@
+{
+  "Version": "1.0.0",
+  "Description": "Initial database setup",
+  "Tasks": [
+    {
+      // Create GeoData
+      "Execute": "CREATE TABLE [dbo].[GeoData]([GeoDataId] [uniqueidentifier] NOT NULL, [Country] [nvarchar](32) NOT NULL, [City] [nvarchar](64) NOT NULL, [PostalCode] [nvarchar](12) NOT NULL, [Latitude] [real] NOT NULL, [Longitude] [real] NOT NULL, [CountryShort] [nvarchar](8) NOT NULL, [State] [nvarchar](64) NOT NULL, [StateShort] [nvarchar](8) NOT NULL, [County] [nvarchar](64) NOT NULL, CONSTRAINT [PK_dbo.GeoData] PRIMARY KEY CLUSTERED ([GeoDataId] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]",
+      "Test": "SELECT CASE WHEN ((SELECT count(*) from sys.tables where name = 'GeoData') = 1) THEN 1 ELSE 0 END"
+    },
+    {
+      // Resize Country to 64 characters
+      "Execute": "ALTER TABLE [dbo].[GeoData] ALTER COLUMN [Country] [nvarchar](64)",
+      "Test": "SELECT count(*) FROM sys.columns c JOIN sys.tables t ON (c.object_id = t.object_id) JOIN sys.types tp ON (c.system_type_id = tp.system_type_id) WHERE t.name = 'GeoData' AND c.name = 'Country' AND tp.name = 'nvarchar' AND c.max_length = (64 * 2)"
+    },
+    {
+      // Resize PostalCode to 8 characters
+      "Execute": "ALTER TABLE [dbo].[GeoData] ALTER COLUMN [PostalCode] [nvarchar](8)"
+    }
+  ]
+}
