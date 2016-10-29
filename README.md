@@ -6,7 +6,7 @@ written by [Kevin Giszewski](https://kevin.giszewski.com).
 
 ## NuGet
 
- **Current Version: 1.0.2**
+ **Current Version: 1.0.3**
  
  Get it from [nuget.org/packages/NPocoMigrations](https://www.nuget.org/packages/NPocoMigrations) 
  or via  Package Manager Console.
@@ -33,6 +33,31 @@ public void YourStartupSequence(){
 
 }
 ```
+By using the NPocoMigrator (empty) standard constructor, the execution path of your 
+application is taken as base directory for your migrations. If it is not intended that 
+the migrations are stored in this path, it is possible to declare explicitly name it
+in a constructor that takes the path to your migrations base directory as parameter.
+
+If you have a web application and you want to store your migrations in the `App_Data` 
+folder you have to instanciate the NPocoMigrator like so:  
+
+```csharp
+protected void Application_Start()
+{
+
+    // ... some code
+
+    // -- NPoco Migrations
+    var migrator = new NPocoMigrator(HostingEnvironment.MapPath(@"/App_Data"));
+    if (migrator.LoadConfig() && migrator.LoadMigrations())
+    {
+        migrator.ExecuteMigrations();
+    }
+
+    // ... some code
+
+}
+```
 
 # How it works
 
@@ -40,7 +65,9 @@ public void YourStartupSequence(){
 
 This simple migrations system is based on a main configuration file which holds the
 current database version (as "type" of System.Version), the connection string name
-to the database and the path to the migration tasks (scripted in SQL).
+to the database and the path to the migration tasks (scripted in SQL). The `migrationsconfig.json` 
+is always to be placed in the migration's base directory, as defined when instantiating
+the NPocoMigrator (see above). 
 
 ```javascript
 {
@@ -50,11 +77,16 @@ to the database and the path to the migration tasks (scripted in SQL).
 }
 ```
 
-**Take care of your DbVersion setting in production! Never Overwrite migrationsconfig.json 
+**Take care of your DbVersion setting in production! Never Overwrite `migrationsconfig.json` 
 when re-deploying. Just copy it once when deploying your binaries, initially!**
 
-I set the `Copy to Output Directory` property for all the .json files needed for migrations 
-to `Copy if newer` and never change them in project, after they were initially deployed. 
+In a desktop application the `Copy to Output Directory` property for all the .json files 
+needed for migrations should be set to `Copy if newer` and they should never be change in 
+the project, itself after they were initially deployed.
+
+If your migrations reside in the `App_Data` folder of a web application then you have to
+set nothing at all. Just include your files in the web project and leave the `Copy to Output Directory`
+set to `Do not copy`.  
 
 ## Migration scriptfiles
 
@@ -64,6 +96,7 @@ to have the .json extension. The name schema used in the test project is like th
 ```
 migration_<dbVersion>.json
 ```
+
 Although the `dbVersion` is included in the scriptfile, it can be useful as a filename 
 suffix to quickly identify a scriptfile in the containing folder. All migrations scriptfiles 
 have to reside in the migrations folder which is specified in the `MigrationsDir` setting 
@@ -119,6 +152,8 @@ the main functionality of this library. Please have a look into it to maybe get 
 informations on how to use `NPocoMigrations`. 
 
 ## Releases
+
+2016-10-29 - 1.0.3 Constructor of NPocoMigrator can now set the base directory of the migrations.
 
 2016-10-29 - 1.0.2 Target Framework changed to 4.5 
 

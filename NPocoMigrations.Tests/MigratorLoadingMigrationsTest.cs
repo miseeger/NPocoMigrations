@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NPocoMigrations.Model;
 
 namespace NPocoMigrations.Tests
 {
@@ -16,8 +14,24 @@ namespace NPocoMigrations.Tests
         [ClassInitialize]
         public static void ClassInit(TestContext context)
         {
+//            _migrator = new NPocoMigrator();
+//            _loadStatus = _migrator.LoadConfig() && _migrator.LoadMigrations();
+        }
+
+
+        [TestInitialize]
+        public void ClearTest()
+        {
             _migrator = new NPocoMigrator();
-            _loadStatus = _migrator.LoadConfig() && _migrator.LoadMigrations();
+            _loadStatus = _migrator.LoadConfig();
+
+            if (_loadStatus)
+            {
+                _migrator.MigrationsConfig.DbVersion = "0.0.0";
+                _migrator.SaveConfig();
+                _loadStatus = _migrator.LoadMigrations();
+            }
+            
         }
 
 

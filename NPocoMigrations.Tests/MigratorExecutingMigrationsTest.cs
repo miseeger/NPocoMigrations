@@ -82,6 +82,9 @@ namespace NPocoMigrations.Tests
 
             Assert.AreEqual("1.0.1", testMigrator.MigrationsConfig.DbVersion);
             Assert.AreEqual(new Version("1.0.1"), testMigrator.MigrationsConfig.SysDbVersion);
+
+            _migrator.MigrationsConfig.DbVersion = "0.0.0";
+            _migrator.SaveConfig();
         }
 
 
@@ -99,6 +102,9 @@ namespace NPocoMigrations.Tests
 
             Assert.AreEqual("1.0.1", testMigrator.MigrationsConfig.DbVersion);
             Assert.AreEqual(new Version("1.0.1"), testMigrator.MigrationsConfig.SysDbVersion);
+
+            _migrator.MigrationsConfig.DbVersion = "0.0.0";
+            _migrator.SaveConfig();
         }
 
     }

@@ -24,7 +24,7 @@ namespace NPocoMigrations.Tests
             File.Move(NPocoMigrationsConstants.MigrationsConfigFile,
                 $"_{NPocoMigrationsConstants.MigrationsConfigFile}");
 
-            var migrator = new NPocoMigrator();
+            var migrator = new NPocoMigrator(".");
             var result = migrator.LoadConfig();
 
             File.Move($"_{NPocoMigrationsConstants.MigrationsConfigFile}",
@@ -52,7 +52,9 @@ namespace NPocoMigrations.Tests
             Assert.AreEqual("DevDb", migrator.MigrationsConfig.DbConnection);
             Assert.AreEqual("0.0.0", migrator.MigrationsConfig.DbVersion);
             Assert.AreEqual(new Version("0.0.0"), migrator.MigrationsConfig.SysDbVersion);
-            Assert.AreEqual(".\\migrations", migrator.MigrationsConfig.MigrationsDir);
+            Assert.AreEqual("Migrations", migrator.MigrationsConfig.MigrationsDir);
+            Assert.AreEqual($"{AppDomain.CurrentDomain.BaseDirectory}\\{NPocoMigrationsConstants.MigrationsConfigFile}", 
+                migrator.MigrationsConfigFilePath);
         }
 
     }

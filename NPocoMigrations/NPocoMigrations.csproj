@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\MigrationsConfig.cs" />
-    <Compile Include="INPocoMigrator.cs" />
+    <Compile Include="IMigrator.cs" />
     <Compile Include="NPocoMigrationsConstants.cs" />
     <Compile Include="Model\Task.cs" />
     <Compile Include="Model\Migrations.cs" />

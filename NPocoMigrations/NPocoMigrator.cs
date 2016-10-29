@@ -12,15 +12,25 @@ using NPocoMigrations.Model;
 namespace NPocoMigrations
 {
 
-    public class NPocoMigrator : INPocoMigrator
+    public class NPocoMigrator : IMigrator
     {
         public MigrationsConfig MigrationsConfig { get; set; }
         public List<Migrations> MigrationsList { get; set; }
+        public string MigrationsBaseDir { get; }
+        public string MigrationsConfigFilePath { get; }
+        public string MigrationsScriptFilePath { get; private set; }
 
 
-        public NPocoMigrator()
+        public NPocoMigrator(string migrationsBaseDir)
         {
             MigrationsList = new List<Migrations>();
+            MigrationsBaseDir = migrationsBaseDir;
+            MigrationsConfigFilePath = $"{MigrationsBaseDir}\\{NPocoMigrationsConstants.MigrationsConfigFile}";
+        }
+
+
+        public NPocoMigrator() : this(AppDomain.CurrentDomain.BaseDirectory)
+        {
         }
 
 
@@ -31,7 +41,7 @@ namespace NPocoMigrations
 
             var migratorFileTarget = new FileTarget
                 {
-                    FileName = "${basedir}/migrator.log",
+                    FileName = $"{MigrationsBaseDir}\\migrator.log",
                     Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} " +
                         @"${pad:padding=5:inner=${level:uppercase=true}} ${message}"
             };
@@ -43,22 +53,24 @@ namespace NPocoMigrations
             LogManager.Configuration = nLogCconfig;
 
             // ----- Load migrations configuration
-            if (File.Exists(NPocoMigrationsConstants.MigrationsConfigFile))
+            if (File.Exists(MigrationsConfigFilePath))
             {
                 MigrationsConfig = JsonConvert.DeserializeObject<MigrationsConfig>(
-                    File.ReadAllText(NPocoMigrationsConstants.MigrationsConfigFile));
+                    File.ReadAllText(MigrationsConfigFilePath));
+                MigrationsScriptFilePath = $"{MigrationsBaseDir}\\{MigrationsConfig.MigrationsDir}";
+
             }
             else
             {
                 LogManager.GetLogger("Migrator")
-                    .Error("Config file migrationsconfig.json not found in current path.");
+                    .Error($"Config file not found ({MigrationsConfigFilePath}).");
                 return false;
             }
 
             // ----- Initialize migration logger and re-assign NLog config
             var migrationsFileTarget = new FileTarget
             {
-                FileName = $"{MigrationsConfig.MigrationsDir}\\migrations.log",
+                FileName = $"{MigrationsScriptFilePath}\\migrations.log",
                 Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${pad:padding=5:inner=${level:uppercase=true}} ${message}"
             };
 
@@ -75,7 +87,7 @@ namespace NPocoMigrations
 
         public void SaveConfig()
         {
-            File.WriteAllText(NPocoMigrationsConstants.MigrationsConfigFile,
+            File.WriteAllText(MigrationsConfigFilePath,
                 JsonConvert.SerializeObject(MigrationsConfig, Formatting.Indented));
         }
 
@@ -83,8 +95,8 @@ namespace NPocoMigrations
         public bool LoadMigrations()
         {
             var logger = LogManager.GetLogger("Migrator");
-
-            var migrationFiles = Directory.GetFiles(MigrationsConfig.MigrationsDir, "*.json");
+            var migrationFiles = Directory.GetFiles(MigrationsScriptFilePath, "*.json");
+            MigrationsList.Clear();
 
             foreach (string migrationsFile in migrationFiles)
             {
@@ -95,12 +107,13 @@ namespace NPocoMigrations
                     if (MigrationsConfig.SysDbVersion.CompareTo(migration.SysVersion) == -1)
                     {
                         MigrationsList.Add(migration);
+                        logger.Info($"{Path.GetFileName(migrationsFile)} ({migration.Description}) loaded.");
                     }
-                    
+
                 }
                 catch (Exception e)
                 {
-                    logger.Error($"Loading {migrationsFile} - {e.Message} ({e.StackTrace})");
+                    logger.Error($"Loading {Path.GetFileName(migrationsFile)} - {e.Message} ({e.StackTrace})");
                     return false;
                 }
             }
@@ -171,9 +184,9 @@ namespace NPocoMigrations
                         catch (Exception e)
                         {
                             logger.Info($"Migration {migrations.Version} completed but database version " +
-                                $"could not be updated in {NPocoMigrationsConstants.MigrationsConfigFile}.\r\n" +
+                                $"could not be updated in {MigrationsConfigFilePath}.\r\n" +
                                 $"{e.Message}\r\n{e.StackTrace}");
-                            migLogger.Info($"Migration {migrations.Version} completed but {NPocoMigrationsConstants.MigrationsConfigFile} could not be updated.");
+                            migLogger.Info($"Migration {migrations.Version} completed but {MigrationsConfigFilePath} could not be updated.");
 
                             return false;
                         }
