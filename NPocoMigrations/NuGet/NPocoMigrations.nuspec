@@ -2,10 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>NPocoMigrations</id>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <title>NPocoMigrations</title>
         <authors>miseeger</authors>
         <owners>miseeger</owners>
+        <projectUrl>https://github.com/miseeger/NPocoMigrations</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Simple scripted database migrations (not only) for MS SQL Server, using NPoco.</description>
         <summary>Migrations using NPoco</summary>

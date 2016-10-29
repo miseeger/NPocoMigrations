@@ -25,7 +25,7 @@ public void YourStartupSequence(){
 
     // -- NPoco Migrations
     var migrator = new NPocoMigrator();
-    if (migrator.LoadConfig() && _migrator.LoadMigrations()){
+    if (migrator.LoadConfig() && migrator.LoadMigrations()){
         migrator.ExecuteMigrations();
     }
 
@@ -49,6 +49,12 @@ to the database and the path to the migration tasks (scripted in SQL).
   "MigrationsDir":".\\migrations"
 }
 ```
+
+**Take care of your DbVersion setting in production! Never Overwrite migrationsconfig.json 
+when re-deploying. Just copy it once when deploying your binaries, initially!**
+
+I set the `Copy to Output Directory` property for all the .json files needed for migrations 
+to `Copy if newer` and never change them in project, after they were initially deployed. 
 
 ## Migration scriptfiles
 
