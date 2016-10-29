@@ -6,7 +6,7 @@ written by [Kevin Giszewski](https://kevin.giszewski.com).
 
 ## NuGet
 
- **Current Version: 1.0.1**
+ **Current Version: 1.0.2**
  
  Get it from [nuget.org/packages/NPocoMigrations](https://www.nuget.org/packages/NPocoMigrations) 
  or via  Package Manager Console.
@@ -117,3 +117,9 @@ saved inside the `MigrationsDir`.
 The test project contained in the solution is just a small integration test that covers 
 the main functionality of this library. Please have a look into it to maybe get some more 
 informations on how to use `NPocoMigrations`. 
+
+## Releases
+
+2016-10-29 - 1.0.2 Target Framework changed to 4.5 
+
+2016-10-29 - 1.0.1 Initial Release (Framework 4.5.2)

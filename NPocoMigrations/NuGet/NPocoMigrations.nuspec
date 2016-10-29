@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>NPocoMigrations</id>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <title>NPocoMigrations</title>
         <authors>miseeger</authors>
         <owners>miseeger</owners>
@@ -10,7 +10,9 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Simple scripted database migrations (not only) for MS SQL Server, using NPoco.</description>
         <summary>Migrations using NPoco</summary>
+        <releaseNotes>Changed Framework back from 4.5.2 to 4.5 due to backward compatibility with some existing projects that can't be upgraded.</releaseNotes>
         <copyright>(c) 2016 miseeger</copyright>
+        <tags>NPoco, Mirgations, SQL</tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="9.0.1" />
             <dependency id="NPoco" version="3.4.4" />
@@ -18,6 +20,6 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="..\bin\Release\NPocoMigrations.dll" target="lib\net452\NPocoMigrations.dll" />
+        <file src="..\bin\Release\NPocoMigrations.dll" target="lib\net45\NPocoMigrations.dll" />
     </files>
 </package>
