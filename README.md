@@ -6,7 +6,7 @@ written by [Kevin Giszewski](https://kevin.giszewski.com).
 
 ## NuGet
 
- **Current Version: 1.0.3**
+ **Current Version: 1.0.4**
  
  Get it from [nuget.org/packages/NPocoMigrations](https://www.nuget.org/packages/NPocoMigrations) 
  or via  Package Manager Console.
