@@ -2,15 +2,16 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>NPocoMigrations</id>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
         <title>NPocoMigrations</title>
         <authors>miseeger</authors>
         <owners>miseeger</owners>
+        <licenseUrl>https://github.com/miseeger/NPocoMigrations/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/miseeger/NPocoMigrations</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Simple scripted database migrations (not only) for MS SQL Server, using NPoco.</description>
         <summary>Migrations using NPoco</summary>
-        <releaseNotes>The migration's base directory can now be passed to the constructor and is no longer just set to the execution path of an application.</releaseNotes>
+        <releaseNotes>NPocoMigrator now implements IDisposable so that it's removed after being used in a using block.</releaseNotes>
         <copyright>(c) 2016 miseeger</copyright>
         <tags>NPoco, Mirgations, SQL</tags>
         <dependencies>

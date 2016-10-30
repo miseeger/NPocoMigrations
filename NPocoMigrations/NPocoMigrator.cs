@@ -14,6 +14,9 @@ namespace NPocoMigrations
 
     public class NPocoMigrator : IMigrator
     {
+
+        private bool _isDisposed;
+
         public MigrationsConfig MigrationsConfig { get; set; }
         public List<Migrations> MigrationsList { get; set; }
         public string MigrationsBaseDir { get; }
@@ -31,6 +34,12 @@ namespace NPocoMigrations
 
         public NPocoMigrator() : this(AppDomain.CurrentDomain.BaseDirectory)
         {
+        }
+
+
+        ~NPocoMigrator()
+        {
+            Dispose(false);
         }
 
 
@@ -125,12 +134,16 @@ namespace NPocoMigrations
         public bool ExecuteMigrations()
         {
             var migrationsToUse = MigrationsList.OrderBy(x => x.SysVersion).ToList();
+            var migLogger = LogManager.GetLogger("Migrator");
 
-            if (!MigrationsList.Any()) return false;
+            if (!MigrationsList.Any())
+            {
+                migLogger.Info($"No migrations to execute. Current database version is {MigrationsConfig.DbVersion}.");
+                return true;
+            }
 
             using (var db = new Database(MigrationsConfig.DbConnection))
             {
-                var migLogger = LogManager.GetLogger("Migrator");
                 var logger = LogManager.GetLogger("Migration");
                 var targetMigration = migrationsToUse.LastOrDefault();
 
@@ -206,17 +219,32 @@ namespace NPocoMigrations
 
         public bool Migrate()
         {
-            var result = false;
+            return LoadConfig() && LoadMigrations() && ExecuteMigrations();
+        }
 
-            if (LoadConfig())
+
+        // ----- Implement IDisposable ----------------------------------------
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed) return;
+
+            if (disposing)
             {
-                if (LoadMigrations())
-                {
-                    result = ExecuteMigrations();
-                }
+                // dispose IDisposable members
             }
 
-            return result;
+            MigrationsList = null;
+            MigrationsConfig = null;
+
+            _isDisposed = true;
         }
 
     }

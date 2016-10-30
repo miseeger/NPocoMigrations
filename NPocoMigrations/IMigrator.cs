@@ -5,7 +5,7 @@ using NPocoMigrations.Model;
 namespace NPocoMigrations
 {
 
-    public interface IMigrator
+    public interface IMigrator : IDisposable
     {
         MigrationsConfig MigrationsConfig { get; set; }
         List<Migrations> MigrationsList { get; set; }

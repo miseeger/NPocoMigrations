@@ -60,6 +60,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MigratorExecutingMigrationsIDisposableTest.cs" />
     <Compile Include="MigratorExecutingMigrationsTest.cs" />
     <Compile Include="MigratorLoadingMigrationsTest.cs" />
     <Compile Include="MigratorLoadingConfigTest.cs" />

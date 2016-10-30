@@ -24,9 +24,14 @@ public void YourStartupSequence(){
     // ... some code
 
     // -- NPoco Migrations
-    var migrator = new NPocoMigrator();
-    if (migrator.LoadConfig() && migrator.LoadMigrations()){
-        migrator.ExecuteMigrations();
+    using (var migrator = new NPocoMigrator())
+    {
+        if (migrator.LoadConfig() && migrator.LoadMigrations()){
+            migrator.ExecuteMigrations();
+        }
+
+        // or for short:
+        // migrator.Migrate();
     }
 
     // ... some code
@@ -47,11 +52,10 @@ protected void Application_Start()
 
     // ... some code
 
-    // -- NPoco Migrations
-    var migrator = new NPocoMigrator(HostingEnvironment.MapPath(@"/App_Data"));
-    if (migrator.LoadConfig() && migrator.LoadMigrations())
+    // -- NPoco Migrations (short version)
+    using (var migrator = new NPocoMigrator(HostingEnvironment.MapPath(@"/App_Data")))
     {
-        migrator.ExecuteMigrations();
+        migrator.Migrate();
     }
 
     // ... some code
@@ -152,6 +156,8 @@ the main functionality of this library. Please have a look into it to maybe get 
 informations on how to use `NPocoMigrations`. 
 
 ## Releases
+
+2016-10-30 - 1.0.4 NPocoMigrator now implements IDisposable in order to release the ressources when the migrations are executed from within a using block.
 
 2016-10-29 - 1.0.3 Constructor of NPocoMigrator can now set the base directory of the migrations.
 
